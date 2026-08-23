@@ -1,0 +1,108 @@
+name: Build NOCO OS IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-ipa:
+    runs-on: macos-15
+    concurrency:
+      group: build-nocoos-ipa-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        shell: bash
+        run: |
+          ls /Applications | grep -i Xcode || true
+          if [ -d /Applications/Xcode_16.4.app ]; then
+            sudo xcode-select -s /Applications/Xcode_16.4.app
+          elif [ -d /Applications/Xcode_16.3.app ]; then
+            sudo xcode-select -s /Applications/Xcode_16.3.app
+          elif [ -d /Applications/Xcode_16.2.app ]; then
+            sudo xcode-select -s /Applications/Xcode_16.2.app
+          fi
+          xcodebuild -version
+
+      - name: Build unsigned IPA
+        shell: bash
+        run: |
+          set -eo pipefail
+          mkdir -p build
+
+          run_build() {
+            local clean_flag="$1"
+            rm -rf build/DerivedData
+            xcodebuild $clean_flag build \
+              -project NOCOOS.xcodeproj \
+              -scheme NOCOOS \
+              -configuration Release \
+              -destination 'generic/platform=iOS' \
+              -derivedDataPath build/DerivedData \
+              -jobs 1 \
+              CODE_SIGNING_ALLOWED=NO \
+              CODE_SIGNING_REQUIRED=NO \
+              CODE_SIGN_IDENTITY="" \
+              CODE_SIGNING_STYLE=Manual \
+              VALIDATE_PRODUCT=NO \
+              COMPILER_INDEX_STORE_ENABLE=NO \
+              SWIFT_COMPILATION_MODE=incremental \
+              SWIFT_WHOLE_MODULE_OPTIMIZATION=NO \
+              2>&1 | tee build/xcodebuild.log
+            grep -q "BUILD SUCCEEDED" build/xcodebuild.log
+          }
+
+          if ! run_build clean; then
+            if grep -qi "build system has crashed\|unexpected service error" build/xcodebuild.log; then
+              echo "=== Retry without clean ==="
+              sleep 8
+              run_build ""
+            else
+              grep -E "error:|fatal error:|BUILD FAILED" build/xcodebuild.log | tail -40 || tail -80 build/xcodebuild.log
+              exit 1
+            fi
+          fi
+
+          APP_PATH=$(find build/DerivedData -name "NOCOOS.app" -type d | head -1)
+          if [ -z "$APP_PATH" ]; then
+            echo "NOCOOS.app not found"
+            tail -100 build/xcodebuild.log
+            exit 1
+          fi
+
+          APP_PLIST="$APP_PATH/Info.plist"
+          /usr/libexec/PlistBuddy -c "Delete :NSAppTransportSecurity" "$APP_PLIST" 2>/dev/null || true
+          /usr/libexec/PlistBuddy -c "Add :NSAppTransportSecurity dict" "$APP_PLIST"
+          /usr/libexec/PlistBuddy -c "Add :NSAppTransportSecurity:NSAllowsArbitraryLoads bool true" "$APP_PLIST"
+          /usr/libexec/PlistBuddy -c "Add :NSAppTransportSecurity:NSAllowsLocalNetworking bool true" "$APP_PLIST"
+          /usr/libexec/PlistBuddy -c "Add :NSAppTransportSecurity:NSAllowsArbitraryLoadsInWebContent bool true" "$APP_PLIST"
+
+          codesign --force --sign - --timestamp=none --generate-entitlement-der \
+            --entitlements NOCOOS/NOCOOS.entitlements "$APP_PATH"
+
+          mkdir -p build/Payload
+          rm -rf build/Payload/NOCOOS.app
+          cp -R "$APP_PATH" build/Payload/NOCOOS.app
+          cd build && zip -rq NOCO-OS.ipa Payload
+          ls -la NOCO-OS.ipa
+
+      - name: Upload build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcodebuild-log
+          path: build/xcodebuild.log
+          retention-days: 7
+
+      - name: Upload IPA
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: NOCO-OS-ipa
+          path: build/NOCO-OS.ipa
+          retention-days: 90

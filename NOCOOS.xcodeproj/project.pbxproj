@@ -1,0 +1,430 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		OSBF000001 /* NOCOOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000001 /* NOCOOSApp.swift */; };
+		OSBF000002 /* NOCOOSTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000002 /* NOCOOSTheme.swift */; };
+		OSBF000003 /* AppRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000003 /* AppRegistry.swift */; };
+		OSBF000004 /* NOCOOSRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000004 /* NOCOOSRouter.swift */; };
+		OSBF000005 /* NOCOAppID.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000005 /* NOCOAppID.swift */; };
+		OSBF000006 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000006 /* Note.swift */; };
+		OSBF000007 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000007 /* ChatMessage.swift */; };
+		OSBF000008 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000008 /* KeychainService.swift */; };
+		OSBF000009 /* HostSanitizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000009 /* HostSanitizer.swift */; };
+		OSBF000010 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000010 /* SettingsStore.swift */; };
+		OSBF000011 /* NotesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000011 /* NotesService.swift */; };
+		OSBF000012 /* CompanionAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000012 /* CompanionAPI.swift */; };
+		OSBF000013 /* ConnectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000013 /* ConnectionStore.swift */; };
+		OSBF000014 /* IntentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000014 /* IntentService.swift */; };
+		OSBF000015 /* AppLauncherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000015 /* AppLauncherService.swift */; };
+		OSBF000016 /* SearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000016 /* SearchService.swift */; };
+		OSBF000017 /* AIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000017 /* AIService.swift */; };
+		OSBF000018 /* SpeechCommandService.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000018 /* SpeechCommandService.swift */; };
+		OSBF000019 /* NOCOOSRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000019 /* NOCOOSRootView.swift */; };
+		OSBF000020 /* HomeScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000020 /* HomeScreenView.swift */; };
+		OSBF000021 /* AppContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000021 /* AppContainerView.swift */; };
+		OSBF000022 /* SpotlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000022 /* SpotlightView.swift */; };
+		OSBF000023 /* AppIconTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000023 /* AppIconTile.swift */; };
+		OSBF000024 /* NOCOAIAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000024 /* NOCOAIAppView.swift */; };
+		OSBF000025 /* NotesAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000025 /* NotesAppView.swift */; };
+		OSBF000026 /* NoteEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000026 /* NoteEditorView.swift */; };
+		OSBF000027 /* CameraAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000027 /* CameraAppView.swift */; };
+		OSBF000028 /* SettingsAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000028 /* SettingsAppView.swift */; };
+		OSBF000029 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = OSFR000029 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		OSFR000001 /* NOCOOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NOCOOSApp.swift; sourceTree = "<group>"; };
+		OSFR000002 /* NOCOOSTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NOCOOSTheme.swift; sourceTree = "<group>"; };
+		OSFR000003 /* AppRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRegistry.swift; sourceTree = "<group>"; };
+		OSFR000004 /* NOCOOSRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NOCOOSRouter.swift; sourceTree = "<group>"; };
+		OSFR000005 /* NOCOAppID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NOCOAppID.swift; sourceTree = "<group>"; };
+		OSFR000006 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
+		OSFR000007 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
+		OSFR000008 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
+		OSFR000009 /* HostSanitizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostSanitizer.swift; sourceTree = "<group>"; };
+		OSFR000010 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
+		OSFR000011 /* NotesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesService.swift; sourceTree = "<group>"; };
+		OSFR000012 /* CompanionAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanionAPI.swift; sourceTree = "<group>"; };
+		OSFR000013 /* ConnectionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionStore.swift; sourceTree = "<group>"; };
+		OSFR000014 /* IntentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentService.swift; sourceTree = "<group>"; };
+		OSFR000015 /* AppLauncherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLauncherService.swift; sourceTree = "<group>"; };
+		OSFR000016 /* SearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchService.swift; sourceTree = "<group>"; };
+		OSFR000017 /* AIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIService.swift; sourceTree = "<group>"; };
+		OSFR000018 /* SpeechCommandService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechCommandService.swift; sourceTree = "<group>"; };
+		OSFR000019 /* NOCOOSRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NOCOOSRootView.swift; sourceTree = "<group>"; };
+		OSFR000020 /* HomeScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenView.swift; sourceTree = "<group>"; };
+		OSFR000021 /* AppContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContainerView.swift; sourceTree = "<group>"; };
+		OSFR000022 /* SpotlightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightView.swift; sourceTree = "<group>"; };
+		OSFR000023 /* AppIconTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconTile.swift; sourceTree = "<group>"; };
+		OSFR000024 /* NOCOAIAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NOCOAIAppView.swift; sourceTree = "<group>"; };
+		OSFR000025 /* NotesAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesAppView.swift; sourceTree = "<group>"; };
+		OSFR000026 /* NoteEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteEditorView.swift; sourceTree = "<group>"; };
+		OSFR000027 /* CameraAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraAppView.swift; sourceTree = "<group>"; };
+		OSFR000028 /* SettingsAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsAppView.swift; sourceTree = "<group>"; };
+		OSFR000029 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		OSFR000030 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		OSFR000031 /* NOCOOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NOCOOS.entitlements; sourceTree = "<group>"; };
+		OSPROD0001 /* NOCOOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NOCOOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		OSFW000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		OSROOT0001 = {
+			isa = PBXGroup;
+			children = (
+				OSGRP00001 /* NOCOOS */,
+				OSGRP00002 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		OSGRP00001 /* NOCOOS */ = {
+			isa = PBXGroup;
+			children = (
+				OSFR000001 /* NOCOOSApp.swift */,
+				OSGRP00003 /* Core */,
+				OSGRP00004 /* Models */,
+				OSGRP00005 /* Services */,
+				OSGRP00006 /* Views */,
+				OSFR000029 /* Assets.xcassets */,
+				OSFR000030 /* Info.plist */,
+				OSFR000031 /* NOCOOS.entitlements */,
+			);
+			path = NOCOOS;
+			sourceTree = "<group>";
+		};
+		OSGRP00002 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				OSPROD0001 /* NOCOOS.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		OSGRP00003 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				OSFR000002 /* NOCOOSTheme.swift */,
+				OSFR000003 /* AppRegistry.swift */,
+				OSFR000004 /* NOCOOSRouter.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		OSGRP00004 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				OSFR000005 /* NOCOAppID.swift */,
+				OSFR000006 /* Note.swift */,
+				OSFR000007 /* ChatMessage.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		OSGRP00005 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				OSFR000008 /* KeychainService.swift */,
+				OSFR000009 /* HostSanitizer.swift */,
+				OSFR000010 /* SettingsStore.swift */,
+				OSFR000011 /* NotesService.swift */,
+				OSFR000012 /* CompanionAPI.swift */,
+				OSFR000013 /* ConnectionStore.swift */,
+				OSFR000014 /* IntentService.swift */,
+				OSFR000015 /* AppLauncherService.swift */,
+				OSFR000016 /* SearchService.swift */,
+				OSFR000017 /* AIService.swift */,
+				OSFR000018 /* SpeechCommandService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		OSGRP00006 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				OSGRP00007 /* Shell */,
+				OSGRP00008 /* Components */,
+				OSGRP00009 /* Apps */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		OSGRP00007 /* Shell */ = {
+			isa = PBXGroup;
+			children = (
+				OSFR000019 /* NOCOOSRootView.swift */,
+				OSFR000020 /* HomeScreenView.swift */,
+				OSFR000021 /* AppContainerView.swift */,
+				OSFR000022 /* SpotlightView.swift */,
+			);
+			path = Shell;
+			sourceTree = "<group>";
+		};
+		OSGRP00008 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				OSFR000023 /* AppIconTile.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		OSGRP00009 /* Apps */ = {
+			isa = PBXGroup;
+			children = (
+				OSFR000024 /* NOCOAIAppView.swift */,
+				OSFR000025 /* NotesAppView.swift */,
+				OSFR000026 /* NoteEditorView.swift */,
+				OSFR000027 /* CameraAppView.swift */,
+				OSFR000028 /* SettingsAppView.swift */,
+			);
+			path = Apps;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		OSTARGET01 /* NOCOOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = OSBLD00002 /* Build configuration list for PBXNativeTarget "NOCOOS" */;
+			buildPhases = (
+				OSSRC00001 /* Sources */,
+				OSFW000001 /* Frameworks */,
+				OSRES00001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NOCOOS;
+			productName = NOCOOS;
+			productReference = OSPROD0001 /* NOCOOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		OSPROJ001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					OSTARGET01 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = OSBLD00001 /* Build configuration list for PBXProject "NOCOOS" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = de;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				de,
+				Base,
+			);
+			mainGroup = OSROOT0001;
+			productRefGroup = OSGRP00002 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				OSTARGET01 /* NOCOOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		OSRES00001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				OSBF000029 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		OSSRC00001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				OSBF000001 /* NOCOOSApp.swift in Sources */,
+				OSBF000002 /* NOCOOSTheme.swift in Sources */,
+				OSBF000003 /* AppRegistry.swift in Sources */,
+				OSBF000004 /* NOCOOSRouter.swift in Sources */,
+				OSBF000005 /* NOCOAppID.swift in Sources */,
+				OSBF000006 /* Note.swift in Sources */,
+				OSBF000007 /* ChatMessage.swift in Sources */,
+				OSBF000008 /* KeychainService.swift in Sources */,
+				OSBF000009 /* HostSanitizer.swift in Sources */,
+				OSBF000010 /* SettingsStore.swift in Sources */,
+				OSBF000011 /* NotesService.swift in Sources */,
+				OSBF000012 /* CompanionAPI.swift in Sources */,
+				OSBF000013 /* ConnectionStore.swift in Sources */,
+				OSBF000014 /* IntentService.swift in Sources */,
+				OSBF000015 /* AppLauncherService.swift in Sources */,
+				OSBF000016 /* SearchService.swift in Sources */,
+				OSBF000017 /* AIService.swift in Sources */,
+				OSBF000018 /* SpeechCommandService.swift in Sources */,
+				OSBF000019 /* NOCOOSRootView.swift in Sources */,
+				OSBF000020 /* HomeScreenView.swift in Sources */,
+				OSBF000021 /* AppContainerView.swift in Sources */,
+				OSBF000022 /* SpotlightView.swift in Sources */,
+				OSBF000023 /* AppIconTile.swift in Sources */,
+				OSBF000024 /* NOCOAIAppView.swift in Sources */,
+				OSBF000025 /* NotesAppView.swift in Sources */,
+				OSBF000026 /* NoteEditorView.swift in Sources */,
+				OSBF000027 /* CameraAppView.swift in Sources */,
+				OSBF000028 /* SettingsAppView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		OSCFG00001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		OSCFG00002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		OSCFG00003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = NOCOOS/NOCOOS.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NOCOOS/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "NOCO OS";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.noco.nocoos;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		OSCFG00004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = NOCOOS/NOCOOS.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NOCOOS/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "NOCO OS";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = de.noco.nocoos;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		OSBLD00001 /* Build configuration list for PBXProject "NOCOOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OSCFG00001 /* Debug */,
+				OSCFG00002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		OSBLD00002 /* Build configuration list for PBXNativeTarget "NOCOOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				OSCFG00003 /* Debug */,
+				OSCFG00004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = OSPROJ001 /* Project object */;
+}

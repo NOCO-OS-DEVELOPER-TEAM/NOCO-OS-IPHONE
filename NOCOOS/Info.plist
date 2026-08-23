@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>de</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>de</string>
+	</array>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+		<key>NSAllowsArbitraryLoadsInWebContent</key>
+		<true/>
+	</dict>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>NOCO OS verbindet sich mit deinem NOCO AI Server auf dem Windows-PC im lokalen Netzwerk.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_noco._tcp</string>
+	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>NOCO OS Kamera nimmt Fotos auf und ermöglicht NOCO AI Bildanalyse.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>NOCO OS nutzt das Mikrofon für Sprachbefehle an NOCO AI.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>NOCO OS wandelt Sprache in Befehle für NOCO AI um.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>NOCO OS kann Fotos in deiner Mediathek speichern.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>NOCO OS speichert aufgenommene Fotos in deiner Mediathek.</string>
+	<key>UILaunchScreen</key>
+	<dict/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>de.noco.nocoos</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>nocoos</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>
