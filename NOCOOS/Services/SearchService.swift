@@ -6,6 +6,7 @@ struct SearchResult: Identifiable, Hashable {
         case note
         case action
         case aiSuggestion
+        case calculation
     }
 
     let id = UUID()
@@ -28,7 +29,18 @@ struct SearchService {
 
         var results: [SearchResult] = []
 
-        for app in NOCOAppID.homeScreenApps {
+        if let math = MathEvaluator.evaluate(query) {
+            results.append(SearchResult(
+                kind: .calculation,
+                title: "= \(math)",
+                subtitle: query,
+                app: nil,
+                noteID: nil,
+                query: query
+            ))
+        }
+
+        for app in NOCOAppID.storeApps {
             if app.displayName.lowercased().contains(query.lowercased()) {
                 results.append(SearchResult(
                     kind: .app,
@@ -64,13 +76,22 @@ struct SearchService {
                 noteID: nil,
                 query: nil
             ), at: 0)
-        case .createNote:
+        case .createNote, .createNoteWithTitle:
             results.insert(SearchResult(
                 kind: .action,
                 title: "Neue Notiz",
                 subtitle: "Notizen",
                 app: .notes,
                 noteID: nil,
+                query: nil
+            ), at: 0)
+        case .openLastNote:
+            results.insert(SearchResult(
+                kind: .action,
+                title: "Letzte Notiz öffnen",
+                subtitle: "Notizen",
+                app: .notes,
+                noteID: notes.notes.first?.id,
                 query: nil
             ), at: 0)
         case .searchNotes(let q):
@@ -82,7 +103,16 @@ struct SearchService {
                 noteID: nil,
                 query: q
             ), at: 0)
-        case .summarizeNotes, .askAI:
+        case .calculate(_, let result):
+            results.insert(SearchResult(
+                kind: .calculation,
+                title: "= \(result)",
+                subtitle: "Enter für Ergebnis",
+                app: nil,
+                noteID: nil,
+                query: query
+            ), at: 0)
+        case .summarizeNotes, .askAI, .summarizeText, .unknown:
             results.insert(SearchResult(
                 kind: .aiSuggestion,
                 title: "NOCO AI fragen",
@@ -91,23 +121,18 @@ struct SearchService {
                 noteID: nil,
                 query: query
             ), at: 0)
-        default:
-            break
         }
 
         return results
     }
 
     func suggestions() -> [SearchResult] {
-        NOCOAppID.homeScreenApps.map { app in
-            SearchResult(
-                kind: .app,
-                title: app.displayName,
-                subtitle: "App",
-                app: app,
-                noteID: nil,
-                query: nil
-            )
+        [
+            SearchResult(kind: .aiSuggestion, title: "Wie viel sind 25 % von 400?", subtitle: "Rechnen mit NOCO AI", app: .nocoAI, noteID: nil, query: "Wie viel sind 25 % von 400?"),
+            SearchResult(kind: .action, title: "Öffne Kamera", subtitle: "Systemaktion", app: .camera, noteID: nil, query: nil),
+            SearchResult(kind: .action, title: "Neue Notiz", subtitle: "Notizen", app: .notes, noteID: nil, query: nil)
+        ] + NOCOAppID.homeScreenApps.prefix(6).map { app in
+            SearchResult(kind: .app, title: app.displayName, subtitle: "App", app: app, noteID: nil, query: nil)
         }
     }
 }

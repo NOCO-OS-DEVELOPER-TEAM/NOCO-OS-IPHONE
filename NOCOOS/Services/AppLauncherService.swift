@@ -14,9 +14,13 @@ final class AppLauncherService {
             router.open(app)
         case .createNote:
             router.openNotes(createNew: true)
+        case .createNoteWithTitle(let title):
+            router.openNotes(createWithTitle: title)
+        case .openLastNote:
+            router.openNotes(openLast: true)
         case .searchNotes(let query):
             router.openNotes(search: query)
-        case .summarizeNotes, .summarizeText, .askAI, .unknown:
+        case .calculate, .summarizeNotes, .summarizeText, .askAI, .unknown:
             router.open(.nocoAI)
         }
     }

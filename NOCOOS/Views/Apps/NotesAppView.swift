@@ -3,10 +3,10 @@ import SwiftUI
 struct NotesAppView: View {
     @EnvironmentObject private var notes: NotesService
     @EnvironmentObject private var router: NOCOOSRouter
+    @EnvironmentObject private var bridge: SystemBridge
 
     @State private var searchText = ""
-    @State private var selectedNote: Note?
-    @State private var showingEditor = false
+    @State private var editingNote: Note?
 
     private var filtered: [Note] {
         searchText.isEmpty ? notes.notes : notes.search(searchText)
@@ -14,84 +14,98 @@ struct NotesAppView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(filtered) { note in
-                    Button {
-                        selectedNote = note
-                        showingEditor = true
-                    } label: {
-                        VStack(alignment: .leading, spacing: 4) {
-                            HStack {
-                                Text(note.title.isEmpty ? "Ohne Titel" : note.title)
-                                    .font(.headline)
-                                    .foregroundStyle(.white)
-                                if note.isFavorite {
-                                    Image(systemName: "star.fill")
-                                        .font(.caption)
-                                        .foregroundStyle(.yellow)
+            Group {
+                if filtered.isEmpty {
+                    ContentUnavailableView(
+                        "Keine Notizen",
+                        systemImage: "note.text",
+                        description: Text("Tippe + um eine Notiz zu erstellen.")
+                    )
+                    .foregroundStyle(.white)
+                } else {
+                    List {
+                        ForEach(filtered) { note in
+                            Button {
+                                editingNote = note
+                            } label: {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    HStack {
+                                        Text(note.title.isEmpty ? "Ohne Titel" : note.title)
+                                            .font(.headline)
+                                            .foregroundStyle(.white)
+                                        if note.isFavorite {
+                                            Image(systemName: "star.fill")
+                                                .font(.caption)
+                                                .foregroundStyle(.yellow)
+                                        }
+                                    }
+                                    Text(note.preview)
+                                        .font(.subheadline)
+                                        .foregroundStyle(NOCOOSTheme.textSecondary)
+                                        .lineLimit(2)
                                 }
+                                .padding(.vertical, 4)
                             }
-                            Text(note.preview)
-                                .font(.subheadline)
-                                .foregroundStyle(NOCOOSTheme.textSecondary)
-                                .lineLimit(2)
-                            if !note.tags.isEmpty {
-                                Text(note.tags.map { "#\($0)" }.joined(separator: " "))
-                                    .font(.caption2)
-                                    .foregroundStyle(NOCOOSTheme.accentGlow)
+                            .listRowBackground(Color.white.opacity(0.06))
+                            .swipeActions {
+                                Button(role: .destructive) { notes.delete(note) } label: {
+                                    Label("Löschen", systemImage: "trash")
+                                }
+                                Button { notes.toggleFavorite(note) } label: {
+                                    Label("Favorit", systemImage: "star")
+                                }
+                                .tint(.yellow)
                             }
                         }
-                        .padding(.vertical, 4)
                     }
-                    .listRowBackground(Color.white.opacity(0.06))
-                    .swipeActions {
-                        Button(role: .destructive) {
-                            notes.delete(note)
-                        } label: {
-                            Label("Löschen", systemImage: "trash")
-                        }
-                        Button {
-                            notes.toggleFavorite(note)
-                        } label: {
-                            Label("Favorit", systemImage: "star")
-                        }
-                        .tint(.yellow)
-                    }
+                    .scrollContentBackground(.hidden)
                 }
             }
-            .scrollContentBackground(.hidden)
+            .background(Color(red: 0.07, green: 0.08, blue: 0.14))
             .searchable(text: $searchText, prompt: "Notizen durchsuchen")
             .navigationTitle("Notizen")
+            .navigationBarTitleDisplayMode(.large)
+            .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        selectedNote = notes.create()
-                        showingEditor = true
+                        editingNote = notes.create()
                     } label: {
                         Image(systemName: "square.and.pencil")
+                            .foregroundStyle(.white)
                     }
                 }
             }
-            .sheet(isPresented: $showingEditor) {
-                if let selectedNote {
-                    NoteEditorView(note: selectedNote)
-                }
+            .navigationDestination(item: $editingNote) { note in
+                NoteEditorView(note: note)
             }
         }
+        .tint(NOCOOSTheme.accent)
         .onAppear(perform: handleLaunchAction)
         .onChange(of: router.notesLaunchAction) { _, _ in handleLaunchAction() }
+        .onChange(of: bridge.pendingNoteFromText) { _, text in
+            if let text, !text.isEmpty {
+                var note = notes.create(title: "NOCO AI", body: text)
+                editingNote = note
+                _ = bridge.consumeNoteFromText()
+            }
+        }
     }
 
     private func handleLaunchAction() {
         guard let action = router.notesLaunchAction else { return }
         switch action {
         case .createNew:
-            selectedNote = notes.create()
-            showingEditor = true
+            editingNote = notes.create()
+        case .createWithTitle(let title):
+            editingNote = notes.create(title: title)
+        case .openLast:
+            if let last = notes.notes.first {
+                editingNote = last
+            }
         case .openNote(let id):
             if let note = notes.notes.first(where: { $0.id == id }) {
-                selectedNote = note
-                showingEditor = true
+                editingNote = note
             }
         case .search(let q):
             searchText = q

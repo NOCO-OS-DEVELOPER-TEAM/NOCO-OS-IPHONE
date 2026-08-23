@@ -36,6 +36,24 @@
 		OSBF000027 /* CameraAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000027 /* CameraAppView.swift */; };
 		OSBF000028 /* SettingsAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000028 /* SettingsAppView.swift */; };
 		OSBF000029 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = OSFR000029 /* Assets.xcassets */; };
+		OSBF000030 /* SpotlightEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000032 /* SpotlightEntry.swift */; };
+		OSBF000031 /* MathEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000033 /* MathEvaluator.swift */; };
+		OSBF000032 /* SystemBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000034 /* SystemBridge.swift */; };
+		OSBF000033 /* SpotlightService.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000035 /* SpotlightService.swift */; };
+		OSBF000034 /* SwipeGestures.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000036 /* SwipeGestures.swift */; };
+		OSBF000035 /* SelectableTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000037 /* SelectableTextEditor.swift */; };
+		OSBF000036 /* AppStoreAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000038 /* AppStoreAppView.swift */; };
+		OSBF000037 /* GamesAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000039 /* GamesAppView.swift */; };
+		OSBF000038 /* SnakeGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000040 /* SnakeGameView.swift */; };
+		OSBF000039 /* MemoryGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000041 /* MemoryGameView.swift */; };
+		OSBF000040 /* ReactionGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000042 /* ReactionGameView.swift */; };
+		OSBF000041 /* CalculatorAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000043 /* CalculatorAppView.swift */; };
+		OSBF000042 /* PhotosAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000044 /* PhotosAppView.swift */; };
+		OSBF000043 /* CalendarAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000045 /* CalendarAppView.swift */; };
+		OSBF000044 /* TimerAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000046 /* TimerAppView.swift */; };
+		OSBF000045 /* WeatherAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000047 /* WeatherAppView.swift */; };
+		OSBF000046 /* MusicAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000048 /* MusicAppView.swift */; };
+		OSBF000047 /* VideoAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000049 /* VideoAppView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +88,24 @@
 		OSFR000029 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		OSFR000030 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		OSFR000031 /* NOCOOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NOCOOS.entitlements; sourceTree = "<group>"; };
+		OSFR000032 /* SpotlightEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightEntry.swift; sourceTree = "<group>"; };
+		OSFR000033 /* MathEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathEvaluator.swift; sourceTree = "<group>"; };
+		OSFR000034 /* SystemBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemBridge.swift; sourceTree = "<group>"; };
+		OSFR000035 /* SpotlightService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightService.swift; sourceTree = "<group>"; };
+		OSFR000036 /* SwipeGestures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeGestures.swift; sourceTree = "<group>"; };
+		OSFR000037 /* SelectableTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableTextEditor.swift; sourceTree = "<group>"; };
+		OSFR000038 /* AppStoreAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreAppView.swift; sourceTree = "<group>"; };
+		OSFR000039 /* GamesAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesAppView.swift; sourceTree = "<group>"; };
+		OSFR000040 /* SnakeGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnakeGameView.swift; sourceTree = "<group>"; };
+		OSFR000041 /* MemoryGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryGameView.swift; sourceTree = "<group>"; };
+		OSFR000042 /* ReactionGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReactionGameView.swift; sourceTree = "<group>"; };
+		OSFR000043 /* CalculatorAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorAppView.swift; sourceTree = "<group>"; };
+		OSFR000044 /* PhotosAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosAppView.swift; sourceTree = "<group>"; };
+		OSFR000045 /* CalendarAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarAppView.swift; sourceTree = "<group>"; };
+		OSFR000046 /* TimerAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerAppView.swift; sourceTree = "<group>"; };
+		OSFR000047 /* WeatherAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherAppView.swift; sourceTree = "<group>"; };
+		OSFR000048 /* MusicAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicAppView.swift; sourceTree = "<group>"; };
+		OSFR000049 /* VideoAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoAppView.swift; sourceTree = "<group>"; };
 		OSPROD0001 /* NOCOOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NOCOOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -131,6 +167,7 @@
 				OSFR000005 /* NOCOAppID.swift */,
 				OSFR000006 /* Note.swift */,
 				OSFR000007 /* ChatMessage.swift */,
+				OSFR000032 /* SpotlightEntry.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -149,6 +186,9 @@
 				OSFR000016 /* SearchService.swift */,
 				OSFR000017 /* AIService.swift */,
 				OSFR000018 /* SpeechCommandService.swift */,
+				OSFR000033 /* MathEvaluator.swift */,
+				OSFR000034 /* SystemBridge.swift */,
+				OSFR000035 /* SpotlightService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -178,6 +218,8 @@
 			isa = PBXGroup;
 			children = (
 				OSFR000023 /* AppIconTile.swift */,
+				OSFR000036 /* SwipeGestures.swift */,
+				OSFR000037 /* SelectableTextEditor.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -190,6 +232,18 @@
 				OSFR000026 /* NoteEditorView.swift */,
 				OSFR000027 /* CameraAppView.swift */,
 				OSFR000028 /* SettingsAppView.swift */,
+				OSFR000038 /* AppStoreAppView.swift */,
+				OSFR000039 /* GamesAppView.swift */,
+				OSFR000040 /* SnakeGameView.swift */,
+				OSFR000041 /* MemoryGameView.swift */,
+				OSFR000042 /* ReactionGameView.swift */,
+				OSFR000043 /* CalculatorAppView.swift */,
+				OSFR000044 /* PhotosAppView.swift */,
+				OSFR000045 /* CalendarAppView.swift */,
+				OSFR000046 /* TimerAppView.swift */,
+				OSFR000047 /* WeatherAppView.swift */,
+				OSFR000048 /* MusicAppView.swift */,
+				OSFR000049 /* VideoAppView.swift */,
 			);
 			path = Apps;
 			sourceTree = "<group>";
@@ -291,6 +345,24 @@
 				OSBF000026 /* NoteEditorView.swift in Sources */,
 				OSBF000027 /* CameraAppView.swift in Sources */,
 				OSBF000028 /* SettingsAppView.swift in Sources */,
+				OSBF000030 /* SpotlightEntry.swift in Sources */,
+				OSBF000031 /* MathEvaluator.swift in Sources */,
+				OSBF000032 /* SystemBridge.swift in Sources */,
+				OSBF000033 /* SpotlightService.swift in Sources */,
+				OSBF000034 /* SwipeGestures.swift in Sources */,
+				OSBF000035 /* SelectableTextEditor.swift in Sources */,
+				OSBF000036 /* AppStoreAppView.swift in Sources */,
+				OSBF000037 /* GamesAppView.swift in Sources */,
+				OSBF000038 /* SnakeGameView.swift in Sources */,
+				OSBF000039 /* MemoryGameView.swift in Sources */,
+				OSBF000040 /* ReactionGameView.swift in Sources */,
+				OSBF000041 /* CalculatorAppView.swift in Sources */,
+				OSBF000042 /* PhotosAppView.swift in Sources */,
+				OSBF000043 /* CalendarAppView.swift in Sources */,
+				OSBF000044 /* TimerAppView.swift in Sources */,
+				OSBF000045 /* WeatherAppView.swift in Sources */,
+				OSBF000046 /* MusicAppView.swift in Sources */,
+				OSBF000047 /* VideoAppView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,7 +416,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = NOCOOS/NOCOOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -359,7 +431,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.noco.nocoos;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -377,7 +449,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = NOCOOS/NOCOOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -392,7 +464,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.noco.nocoos;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

@@ -94,7 +94,7 @@ struct HomeScreenView: View {
         HStack {
             Image(systemName: "hand.tap.fill")
                 .foregroundStyle(NOCOOSTheme.textSecondary)
-            Text("Nach unten wischen für Spotlight · Halte NOCO AI für Sprache")
+            Text("Von oben wischen → Spotlight · In Apps nach oben → Homescreen")
                 .font(.caption)
                 .foregroundStyle(NOCOOSTheme.textSecondary)
         }

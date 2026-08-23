@@ -22,6 +22,7 @@ struct AppContainerView: View {
             )
             .padding(.top, 54)
             .padding(.horizontal, 8)
+            .nocoSwipeUpHome()
         }
     }
 

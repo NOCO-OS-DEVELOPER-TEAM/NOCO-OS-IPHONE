@@ -4,7 +4,6 @@ import Foundation
 final class AIService: ObservableObject {
     @Published var messages: [ChatMessage] = []
     @Published var isProcessing = false
-    @Published var pendingPrompt: String?
 
     private let connection: ConnectionStore
     private let notes: NotesService
@@ -31,6 +30,54 @@ final class AIService: ObservableObject {
         isProcessing = true
         defer { isProcessing = false }
 
+        return await handleIntent(prompt, router: router, closeSpotlight: false)
+    }
+
+    func processSpotlightQuery(_ raw: String, router: NOCOOSRouter) async -> String? {
+        let prompt = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !prompt.isEmpty else { return nil }
+
+        messages.append(ChatMessage(role: .user, text: prompt))
+        isProcessing = true
+        defer { isProcessing = false }
+
+        if let local = notes.answerFromNotes(question: prompt) {
+            appendAssistant(local)
+            return local
+        }
+
+        return await askServer(prompt, extraContext: notes.notesContextForAI())
+    }
+
+    func recordSpotlightExchange(user: String, assistant: String) async {
+        if !messages.contains(where: { $0.role == .user && $0.text == user }) {
+            messages.append(ChatMessage(role: .user, text: user))
+        }
+        appendAssistant(assistant)
+    }
+
+    func analyzeImageDescription(_ description: String) async -> String? {
+        messages.append(ChatMessage(role: .user, text: "Bild analysieren: \(description)"))
+        isProcessing = true
+        defer { isProcessing = false }
+        return await askServer("Analysiere dieses Bild und beschreibe, was du siehst. Kontext: \(description)", extraContext: nil)
+    }
+
+    func processSelectedText(_ action: String, text: String) async -> String? {
+        let prompt: String
+        switch action {
+        case "summarize": prompt = "Fasse folgenden Text kurz zusammen:\n\(text)"
+        case "explain": prompt = "Erkläre folgenden Text einfach:\n\(text)"
+        case "rewrite": prompt = "Formuliere folgenden Text freundlicher um:\n\(text)"
+        default: prompt = text
+        }
+        messages.append(ChatMessage(role: .user, text: prompt))
+        isProcessing = true
+        defer { isProcessing = false }
+        return await askServer(prompt, extraContext: nil)
+    }
+
+    private func handleIntent(_ prompt: String, router: NOCOOSRouter, closeSpotlight: Bool) async -> String? {
         let intent = intentService.parse(prompt)
         switch intent {
         case .openApp(let app):
@@ -43,6 +90,21 @@ final class AIService: ObservableObject {
             let reply = "Neue Notiz wird erstellt."
             appendAssistant(reply)
             return reply
+        case .createNoteWithTitle(let title):
+            router.openNotes(createWithTitle: title)
+            let reply = "Notiz „\(title)“ wird erstellt."
+            appendAssistant(reply)
+            return reply
+        case .openLastNote:
+            if let last = notes.notes.first {
+                router.openNotes(noteID: last.id)
+                let reply = "Letzte Notiz geöffnet."
+                appendAssistant(reply)
+                return reply
+            }
+            let reply = "Keine Notizen vorhanden."
+            appendAssistant(reply)
+            return reply
         case .searchNotes(let query):
             router.openNotes(search: query)
             let hits = notes.search(query)
@@ -51,11 +113,12 @@ final class AIService: ObservableObject {
                 : "Ich habe \(hits.count) Notiz(en) zu „\(query)“ gefunden."
             appendAssistant(reply)
             return reply
+        case .calculate(_, let result):
+            let reply = "= \(result)"
+            appendAssistant(reply)
+            return reply
         case .summarizeNotes:
-            return await askServer(
-                "Fasse meine Notizen kurz zusammen.",
-                extraContext: notes.notesContextForAI()
-            )
+            return await askServer("Fasse meine Notizen kurz zusammen.", extraContext: notes.notesContextForAI())
         case .summarizeText(let text):
             return await askServer("Fasse folgenden Text zusammen:\n\(text)")
         case .askAI, .unknown:
@@ -65,10 +128,6 @@ final class AIService: ObservableObject {
             }
             return await askServer(prompt, extraContext: notes.notesContextForAI())
         }
-    }
-
-    func analyzeImageDescription(_ description: String) async -> String? {
-        await askServer("Analysiere dieses Bild: \(description)")
     }
 
     private func askServer(_ prompt: String, extraContext: String? = nil) async -> String? {

@@ -7,9 +7,11 @@ struct NOCOOSRootView: View {
     var body: some View {
         ZStack {
             HomeScreenView()
-                .blur(radius: router.activeApp == nil ? 0 : 8)
+                .blur(radius: router.activeApp == nil && !router.showSpotlight ? 0 : (router.showSpotlight ? 4 : 8))
                 .scaleEffect(router.activeApp == nil ? 1 : 0.96)
                 .animation(NOCOOSTheme.spring(), value: router.activeApp)
+                .animation(NOCOOSTheme.spring(), value: router.showSpotlight)
+                .nocoSwipeDownSpotlight()
 
             if let app = router.activeApp {
                 AppContainerView(app: app)
@@ -22,7 +24,6 @@ struct NOCOOSRootView: View {
 
             if router.showSpotlight {
                 SpotlightView()
-                    .transition(.move(edge: .top).combined(with: .opacity))
                     .zIndex(3)
             }
         }

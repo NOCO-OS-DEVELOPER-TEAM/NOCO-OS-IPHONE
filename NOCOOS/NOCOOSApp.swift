@@ -6,6 +6,7 @@ struct NOCOOSApp: App {
     @StateObject private var connection = ConnectionStore()
     @StateObject private var notes = NotesService()
     @StateObject private var settings = SettingsStore()
+    @StateObject private var bridge = SystemBridge()
     @StateObject private var ai: AIService
 
     init() {
@@ -25,6 +26,7 @@ struct NOCOOSApp: App {
                 .environmentObject(connection)
                 .environmentObject(notes)
                 .environmentObject(settings)
+                .environmentObject(bridge)
                 .environmentObject(ai)
                 .preferredColorScheme(settings.colorScheme)
                 .onOpenURL { url in
