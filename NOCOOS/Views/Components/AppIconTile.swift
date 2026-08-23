@@ -9,7 +9,7 @@ struct AppIconTile: View {
     var body: some View {
         Button {
             NOCOOSTheme.lightHaptic()
-            withAnimation(NOCOOSTheme.spring(response: 0.28, damping: 0.62)) {
+            withAnimation(NOCOOSTheme.spring(response: 0.28, dampingFraction: 0.62)) {
                 pressed = true
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {

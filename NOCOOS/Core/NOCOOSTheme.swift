@@ -29,8 +29,8 @@ enum NOCOOSTheme {
         endPoint: .bottomTrailing
     )
 
-    static func spring(_ response: Double = 0.42, damping: Double = 0.82) -> Animation {
-        .spring(response: response, dampingFraction: damping)
+    static func spring(_ response: Double = 0.42, dampingFraction: Double = 0.82) -> Animation {
+        .spring(response: response, dampingFraction: dampingFraction)
     }
 
     static func lightHaptic() {

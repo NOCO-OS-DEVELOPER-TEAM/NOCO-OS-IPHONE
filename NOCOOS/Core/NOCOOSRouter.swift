@@ -9,7 +9,7 @@ final class NOCOOSRouter: ObservableObject {
     @Published var isLaunchAnimating = false
     @Published var notesLaunchAction: NotesLaunchAction?
 
-    enum NotesLaunchAction {
+    enum NotesLaunchAction: Equatable {
         case createNew
         case openNote(UUID)
         case search(String)
@@ -20,7 +20,7 @@ final class NOCOOSRouter: ObservableObject {
         NOCOOSTheme.mediumHaptic()
         launchOrigin = frame
         isLaunchAnimating = true
-        withAnimation(NOCOOSTheme.spring(response: 0.48, damping: 0.86)) {
+        withAnimation(NOCOOSTheme.spring(response: 0.48, dampingFraction: 0.86)) {
             activeApp = app
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
@@ -30,7 +30,7 @@ final class NOCOOSRouter: ObservableObject {
 
     func closeApp() {
         NOCOOSTheme.lightHaptic()
-        withAnimation(NOCOOSTheme.spring(response: 0.44, damping: 0.88)) {
+        withAnimation(NOCOOSTheme.spring(response: 0.44, dampingFraction: 0.88)) {
             activeApp = nil
             notesLaunchAction = nil
         }

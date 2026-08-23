@@ -178,7 +178,7 @@ final class CameraModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelega
         output.capturePhoto(with: settings, delegate: self)
     }
 
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+    nonisolated func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         guard error == nil, let data = photo.fileDataRepresentation(), let image = UIImage(data: data) else { return }
         Task { @MainActor in
             withAnimation(NOCOOSTheme.spring()) {
