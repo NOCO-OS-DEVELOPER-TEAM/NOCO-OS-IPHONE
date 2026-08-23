@@ -270,3 +270,7 @@ struct SpotlightView: View {
         }
     }
 }
+
+extension Notification.Name {
+    static let nocoOSSpotlightAI = Notification.Name("nocoos.spotlight.ai")
+}
