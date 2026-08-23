@@ -1,12 +1,12 @@
 import SwiftUI
 
 struct ReactionGameView: View {
-    @State private var state: State = .waiting
+    @State private var gameState: GameState = .waiting
     @State private var startTime = Date()
     @State private var best: Double?
     @State private var message = "Warte auf Grün …"
 
-    enum State { case waiting, ready, tapped, tooEarly }
+    enum GameState { case waiting, ready, tapped, tooEarly }
 
     var body: some View {
         VStack(spacing: 20) {
@@ -25,7 +25,7 @@ struct ReactionGameView: View {
                     .overlay(Text(buttonLabel).font(.headline).foregroundStyle(.white))
             }
             .buttonStyle(.plain)
-            .disabled(state == .waiting)
+            .disabled(gameState == .waiting)
         }
         .padding()
         .background(Color(red: 0.07, green: 0.08, blue: 0.14))
@@ -34,7 +34,7 @@ struct ReactionGameView: View {
     }
 
     private var color: Color {
-        switch state {
+        switch gameState {
         case .waiting: return .red.opacity(0.8)
         case .ready: return .green
         case .tapped: return NOCOOSTheme.accent
@@ -43,7 +43,7 @@ struct ReactionGameView: View {
     }
 
     private var buttonLabel: String {
-        switch state {
+        switch gameState {
         case .waiting: return "Nicht tippen!"
         case .ready: return "JETZT!"
         case .tapped: return "Nochmal"
@@ -52,12 +52,12 @@ struct ReactionGameView: View {
     }
 
     private func scheduleRound() {
-        state = .waiting
+        gameState = .waiting
         message = "Warte auf Grün …"
         let delay = Double.random(in: 1.2...3.5)
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            if state == .waiting {
-                state = .ready
+            if gameState == .waiting {
+                gameState = .ready
                 startTime = Date()
                 message = "Tippe jetzt!"
                 NOCOOSTheme.mediumHaptic()
@@ -66,14 +66,14 @@ struct ReactionGameView: View {
     }
 
     private func tap() {
-        switch state {
+        switch gameState {
         case .waiting:
-            state = .tooEarly
+            gameState = .tooEarly
             message = "Zu früh! Warte auf Grün."
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { scheduleRound() }
         case .ready:
             let elapsed = Date().timeIntervalSince(startTime)
-            state = .tapped
+            gameState = .tapped
             message = String(format: "%.3f Sekunden!", elapsed)
             if best == nil || elapsed < best! { best = elapsed }
             NOCOOSTheme.mediumHaptic()
