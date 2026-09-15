@@ -25,23 +25,14 @@ struct NOCOAIAppView: View {
     }
 
     private var aiHeader: some View {
-        HStack {
-            ZStack {
-                Circle()
-                    .fill(NOCOOSTheme.aiGradient)
-                    .frame(width: 46, height: 46)
-                    .shadow(color: NOCOOSTheme.accent.opacity(glowPhase ? 0.6 : 0.2), radius: glowPhase ? 18 : 8)
-                    .animation(.easeInOut(duration: 2).repeatForever(autoreverses: true), value: glowPhase)
-                Image(systemName: "sparkles")
-                    .foregroundStyle(.white)
-            }
-            .onAppear { glowPhase = true }
+        HStack(spacing: 12) {
+            NOCOAICoreOrb(size: 44, pulsing: true)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text("NOCO AI")
-                    .font(.headline)
+                    .font(.headline.weight(.bold))
                     .foregroundStyle(.white)
-                Text(connection.isOnline ? "Mit Windows-PC verbunden" : "Offline · Einstellungen prüfen")
+                Text(connection.isOnline ? "System-Gehirn · bereit" : "Offline · Einstellungen")
                     .font(.caption)
                     .foregroundStyle(NOCOOSTheme.textSecondary)
             }
@@ -62,6 +53,8 @@ struct NOCOAIAppView: View {
                     .font(.title3)
                     .foregroundStyle(speech.isListening ? NOCOOSTheme.accent : .white.opacity(0.85))
                     .symbolEffect(.variableColor.iterative, isActive: speech.isListening)
+                    .frame(width: 40, height: 40)
+                    .nocoLiquidGlass(cornerRadius: 14, rainbow: speech.isListening)
             }
             .buttonStyle(.plain)
             .disabled(!settings.voiceEnabled)

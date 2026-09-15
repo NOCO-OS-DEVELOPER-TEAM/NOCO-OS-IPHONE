@@ -97,7 +97,12 @@ enum NOCOAppID: String, CaseIterable, Identifiable, Codable {
     }
 
     static var homeScreenApps: [NOCOAppID] {
-        [.nocoAI, .notes, .camera, .photos, .calculator, .games, .appStore, .weather, .music, .calendar, .timer, .settings]
+        [.notes, .camera, .photos, .calculator, .games, .appStore, .weather, .music, .calendar, .timer, .video, .settings]
+    }
+
+    /// Bottom dock — AI is the system heart in the center.
+    static var dockApps: [NOCOAppID] {
+        [.notes, .camera, .nocoAI, .photos, .settings]
     }
 
     static var storeApps: [NOCOAppID] {

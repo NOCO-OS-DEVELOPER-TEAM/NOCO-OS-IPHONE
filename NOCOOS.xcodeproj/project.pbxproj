@@ -30,6 +30,8 @@
 		OSBF000021 /* AppContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000021 /* AppContainerView.swift */; };
 		OSBF000022 /* SpotlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000022 /* SpotlightView.swift */; };
 		OSBF000023 /* AppIconTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000023 /* AppIconTile.swift */; };
+		OSBF000050 /* BootSplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000050 /* BootSplashView.swift */; };
+		OSBF000051 /* DockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000051 /* DockView.swift */; };
 		OSBF000024 /* NOCOAIAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000024 /* NOCOAIAppView.swift */; };
 		OSBF000025 /* NotesAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000025 /* NotesAppView.swift */; };
 		OSBF000026 /* NoteEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OSFR000026 /* NoteEditorView.swift */; };
@@ -80,6 +82,8 @@
 		OSFR000021 /* AppContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContainerView.swift; sourceTree = "<group>"; };
 		OSFR000022 /* SpotlightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightView.swift; sourceTree = "<group>"; };
 		OSFR000023 /* AppIconTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconTile.swift; sourceTree = "<group>"; };
+		OSFR000050 /* BootSplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BootSplashView.swift; sourceTree = "<group>"; };
+		OSFR000051 /* DockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DockView.swift; sourceTree = "<group>"; };
 		OSFR000024 /* NOCOAIAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NOCOAIAppView.swift; sourceTree = "<group>"; };
 		OSFR000025 /* NotesAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesAppView.swift; sourceTree = "<group>"; };
 		OSFR000026 /* NoteEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteEditorView.swift; sourceTree = "<group>"; };

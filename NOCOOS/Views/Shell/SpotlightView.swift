@@ -86,7 +86,8 @@ struct SpotlightView: View {
             }
         }
         .padding(16)
-        .nocoGlass(cornerRadius: 20)
+        .nocoLiquidGlass(cornerRadius: 22, rainbow: true)
+        .nocoRainbowGlow(active: spotlight.isProcessing, radius: 12)
     }
 
     private var content: some View {

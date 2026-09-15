@@ -3,101 +3,134 @@ import SwiftUI
 struct HomeScreenView: View {
     @EnvironmentObject private var router: NOCOOSRouter
     @EnvironmentObject private var connection: ConnectionStore
+    @EnvironmentObject private var ai: AIService
     @State private var now = Date()
+    @State private var appear = false
 
-    private let timer = Timer.publish(every: 30, on: .main, in: .common).autoconnect()
+    private let timer = Timer.publish(every: 20, on: .main, in: .common).autoconnect()
+
+    private var pageApps: [NOCOAppID] {
+        NOCOAppID.homeScreenApps.filter { !NOCOAppID.dockApps.contains($0) }
+    }
 
     var body: some View {
         GeometryReader { geo in
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 28) {
-                    header
-                    clockWidget
-                    appGrid(width: geo.size.width)
-                    statusBar
+            VStack(spacing: 0) {
+                statusStrip
+                    .padding(.horizontal, 22)
+                    .padding(.top, 6)
+
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 22) {
+                        clockHero
+                        aiSystemCard
+                        appGrid
+                        Spacer(minLength: 120)
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 10)
+                    .opacity(appear ? 1 : 0)
+                    .offset(y: appear ? 0 : 16)
                 }
-                .padding(.horizontal, 22)
-                .padding(.top, 18)
-                .padding(.bottom, 40)
             }
+            .frame(width: geo.size.width, height: geo.size.height)
         }
         .onReceive(timer) { now = $0 }
-        .onAppear { now = Date() }
+        .onAppear {
+            now = Date()
+            withAnimation(NOCOOSTheme.softSpring()) { appear = true }
+        }
     }
 
-    private var header: some View {
+    private var statusStrip: some View {
         HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("NOCO OS")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
-                    .foregroundStyle(NOCOOSTheme.textPrimary)
-                Text("Dein persönliches System")
-                    .font(.subheadline)
-                    .foregroundStyle(NOCOOSTheme.textSecondary)
-            }
+            Text(now, format: .dateTime.hour().minute())
+                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                .foregroundStyle(.white.opacity(0.92))
+                .monospacedDigit()
             Spacer()
-            Button {
-                router.openSpotlight()
-            } label: {
-                Image(systemName: "magnifyingglass")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .frame(width: 44, height: 44)
-                    .nocoGlass(cornerRadius: 14)
+            HStack(spacing: 8) {
+                Circle()
+                    .fill(connection.isOnline ? Color(red: 0.35, green: 0.95, blue: 0.55) : Color.orange)
+                    .frame(width: 7, height: 7)
+                    .shadow(color: connection.isOnline ? .green.opacity(0.6) : .clear, radius: 4)
+                Image(systemName: "wifi")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.75))
+                Image(systemName: "battery.100")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.75))
             }
-            .buttonStyle(.plain)
         }
     }
 
-    private var clockWidget: some View {
-        HStack(alignment: .bottom) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(now, format: .dateTime.hour().minute())
-                    .font(.system(size: 54, weight: .thin, design: .rounded))
-                    .foregroundStyle(.white)
-                Text(now, format: .dateTime.weekday(.wide).day().month(.wide))
-                    .font(.headline)
-                    .foregroundStyle(NOCOOSTheme.textSecondary)
-            }
-            Spacer()
-            VStack(alignment: .trailing, spacing: 8) {
-                HStack(spacing: 6) {
-                    Circle()
-                        .fill(connection.isOnline ? Color.green : Color.orange)
-                        .frame(width: 8, height: 8)
-                    Text(connection.statusMessage)
-                        .font(.caption.weight(.medium))
+    private var clockHero: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(now, format: .dateTime.hour().minute())
+                .font(.system(size: 72, weight: .ultraLight, design: .rounded))
+                .foregroundStyle(.white)
+                .monospacedDigit()
+                .shadow(color: NOCOOSTheme.accent.opacity(0.25), radius: 20)
+            Text(now, format: .dateTime.weekday(.wide).day().month(.wide))
+                .font(.title3.weight(.medium))
+                .foregroundStyle(NOCOOSTheme.textSecondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, 8)
+    }
+
+    private var aiSystemCard: some View {
+        Button {
+            NOCOOSTheme.mediumHaptic()
+            router.open(.nocoAI)
+        } label: {
+            HStack(spacing: 14) {
+                NOCOAICoreOrb(size: 48, pulsing: true)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("NOCO AI")
+                        .font(.headline.weight(.bold))
+                        .foregroundStyle(.white)
+                    Text(connection.isOnline ? "System bereit · Frag mich etwas" : "Offline · Server in Einstellungen")
+                        .font(.caption)
                         .foregroundStyle(NOCOOSTheme.textSecondary)
+                        .lineLimit(1)
                 }
-                Label("NOCO AI bereit", systemImage: "sparkles")
-                    .font(.caption)
-                    .foregroundStyle(NOCOOSTheme.accentGlow)
+
+                Spacer(minLength: 0)
+
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(.white.opacity(0.45))
             }
+            .padding(16)
+            .nocoLiquidGlass(cornerRadius: 26, rainbow: true)
+            .nocoRainbowGlow(active: true, radius: 14)
         }
-        .padding(20)
-        .nocoGlass(cornerRadius: 26)
+        .buttonStyle(OSPressStyle())
     }
 
-    private func appGrid(width: CGFloat) -> some View {
-        let columns = [GridItem(.adaptive(minimum: 78), spacing: 22)]
-        return LazyVGrid(columns: columns, spacing: 26) {
-            ForEach(NOCOAppID.homeScreenApps) { app in
+    private var appGrid: some View {
+        let columns = Array(repeating: GridItem(.flexible(), spacing: 18), count: 4)
+        return LazyVGrid(columns: columns, spacing: 22) {
+            ForEach(Array(pageApps.enumerated()), id: \.element.id) { index, app in
                 AppIconTile(app: app) {
                     router.open(app)
                 }
+                .opacity(appear ? 1 : 0)
+                .offset(y: appear ? 0 : 12)
+                .animation(NOCOOSTheme.spring().delay(Double(index) * 0.03), value: appear)
             }
         }
         .padding(.top, 4)
     }
+}
 
-    private var statusBar: some View {
-        HStack {
-            Image(systemName: "hand.tap.fill")
-                .foregroundStyle(NOCOOSTheme.textSecondary)
-            Text("Von oben wischen → Spotlight · In Apps nach oben → Homescreen")
-                .font(.caption)
-                .foregroundStyle(NOCOOSTheme.textSecondary)
-        }
-        .padding(.top, 8)
+struct OSPressStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.97 : 1)
+            .opacity(configuration.isPressed ? 0.92 : 1)
+            .animation(NOCOOSTheme.snappy(), value: configuration.isPressed)
     }
 }

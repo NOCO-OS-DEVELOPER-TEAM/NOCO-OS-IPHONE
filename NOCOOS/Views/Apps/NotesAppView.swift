@@ -85,8 +85,7 @@ struct NotesAppView: View {
         .onChange(of: router.notesLaunchAction) { _, _ in handleLaunchAction() }
         .onChange(of: bridge.pendingNoteFromText) { _, text in
             if let text, !text.isEmpty {
-                var note = notes.create(title: "NOCO AI", body: text)
-                editingNote = note
+                editingNote = notes.create(title: "NOCO AI", body: text)
                 _ = bridge.consumeNoteFromText()
             }
         }
