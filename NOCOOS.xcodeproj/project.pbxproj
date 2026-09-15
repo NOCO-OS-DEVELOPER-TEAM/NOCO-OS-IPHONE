@@ -214,6 +214,8 @@
 				OSFR000020 /* HomeScreenView.swift */,
 				OSFR000021 /* AppContainerView.swift */,
 				OSFR000022 /* SpotlightView.swift */,
+				OSFR000050 /* BootSplashView.swift */,
+				OSFR000051 /* DockView.swift */,
 			);
 			path = Shell;
 			sourceTree = "<group>";
@@ -344,6 +346,8 @@
 				OSBF000021 /* AppContainerView.swift in Sources */,
 				OSBF000022 /* SpotlightView.swift in Sources */,
 				OSBF000023 /* AppIconTile.swift in Sources */,
+				OSBF000050 /* BootSplashView.swift in Sources */,
+				OSBF000051 /* DockView.swift in Sources */,
 				OSBF000024 /* NOCOAIAppView.swift in Sources */,
 				OSBF000025 /* NotesAppView.swift in Sources */,
 				OSBF000026 /* NoteEditorView.swift in Sources */,

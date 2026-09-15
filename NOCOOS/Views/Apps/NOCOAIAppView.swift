@@ -8,7 +8,6 @@ struct NOCOAIAppView: View {
 
     @StateObject private var speech = SpeechCommandService()
     @State private var input = ""
-    @State private var glowPhase = false
 
     var body: some View {
         VStack(spacing: 0) {
