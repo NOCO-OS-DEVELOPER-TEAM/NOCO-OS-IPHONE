@@ -1,6 +1,7 @@
 # Xcode
 build/
 build-log/
+build-log*/
 DerivedData/
 *.xcuserstate
 xcuserdata/
