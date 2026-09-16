@@ -74,7 +74,7 @@ struct CameraAppView: View {
             model.configure()
         }
         .onDisappear { model.stop() }
-        .onChange(of: mode) { _, newMode in
+        .onChange(of: mode) { _, _ in
             showPreview = false
             model.lastCapture = nil
             model.lastVideoURL = nil
@@ -83,7 +83,7 @@ struct CameraAppView: View {
             Button("Als Notiz speichern") {
                 bridge.createNoteFromText(analysisResult)
                 router.closeApp()
-                router.openNotes(createNew: true)
+                router.open(.notes)
             }
             Button("OK", role: .cancel) {}
         } message: {
@@ -127,6 +127,7 @@ struct CameraAppView: View {
             .disabled(!showPreview)
 
             Button {
+                guard model.isReady else { return }
                 if mode == .photo {
                     model.capturePhoto()
                     showPreview = true
@@ -152,10 +153,12 @@ struct CameraAppView: View {
                         Circle()
                             .fill(mode == .video ? Color.red : Color.white)
                             .frame(width: 58, height: 58)
+                            .opacity(model.isReady ? 1 : 0.4)
                     }
                 }
             }
             .buttonStyle(.plain)
+            .disabled(!model.isReady && !(mode == .video && model.isRecording))
 
             Button {
                 Task { await analyzeCapture() }
@@ -168,7 +171,7 @@ struct CameraAppView: View {
                 }
             }
             .foregroundStyle(NOCOOSTheme.accentGlow)
-            .disabled(!showPreview || isAnalyzing)
+            .disabled(!showPreview || isAnalyzing || ai.isProcessing)
         }
         .padding(.vertical, 20)
         .frame(maxWidth: .infinity)
@@ -176,6 +179,7 @@ struct CameraAppView: View {
     }
 
     private func analyzeCapture() async {
+        guard !isAnalyzing else { return }
         isAnalyzing = true
         defer { isAnalyzing = false }
 
@@ -209,25 +213,30 @@ final class CameraModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelega
     @Published var permissionDenied = false
     @Published var isRecording = false
     @Published var recordingDuration: Double = 0
+    @Published var isReady = false
 
     let session = AVCaptureSession()
     private let photoOutput = AVCapturePhotoOutput()
     private let movieOutput = AVCaptureMovieFileOutput()
+    private let sessionQueue = DispatchQueue(label: "de.noco.nocoos.camera.session")
     private var isConfigured = false
+    private var sessionGeneration = 0
     private var recordingTimer: Timer?
 
     func configure() {
-        guard !isConfigured else {
-            if !session.isRunning { session.startRunning() }
-            return
-        }
+        let generation = sessionGeneration
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
-            setupSession()
+            startOrReuseSession(generation: generation)
         case .notDetermined:
-            AVCaptureDevice.requestAccess(for: .video) { granted in
+            AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
                 Task { @MainActor in
-                    granted ? self.setupSession() : (self.permissionDenied = true)
+                    guard let self else { return }
+                    if granted {
+                        self.startOrReuseSession(generation: generation)
+                    } else {
+                        self.permissionDenied = true
+                    }
                 }
             }
         default:
@@ -235,36 +244,69 @@ final class CameraModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelega
         }
     }
 
-    private func setupSession() {
-        session.beginConfiguration()
-        session.sessionPreset = .high
-        guard
-            let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
-            let input = try? AVCaptureDeviceInput(device: device),
-            session.canAddInput(input)
-        else {
-            permissionDenied = true
-            session.commitConfiguration()
+    private func startOrReuseSession(generation: Int) {
+        if isConfigured {
+            sessionQueue.async { [weak self] in
+                guard let self else { return }
+                guard generation == self.sessionGeneration else { return }
+                if !self.session.isRunning {
+                    self.session.startRunning()
+                }
+                Task { @MainActor in
+                    guard generation == self.sessionGeneration else { return }
+                    self.isReady = self.session.isRunning
+                }
+            }
             return
         }
-        session.addInput(input)
-        if session.canAddOutput(photoOutput) { session.addOutput(photoOutput) }
-        if session.canAddOutput(movieOutput) { session.addOutput(movieOutput) }
-        session.commitConfiguration()
+        setupSession(generation: generation)
+    }
 
-        DispatchQueue.global(qos: .userInitiated).async {
+    private func setupSession(generation: Int) {
+        sessionQueue.async { [weak self] in
+            guard let self else { return }
+            guard generation == self.sessionGeneration else { return }
+
+            self.session.beginConfiguration()
+            self.session.sessionPreset = .high
+
+            guard
+                let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
+                let input = try? AVCaptureDeviceInput(device: device),
+                self.session.canAddInput(input)
+            else {
+                self.session.commitConfiguration()
+                Task { @MainActor in
+                    self.permissionDenied = true
+                    self.isReady = false
+                }
+                return
+            }
+
+            self.session.addInput(input)
+            if self.session.canAddOutput(self.photoOutput) { self.session.addOutput(self.photoOutput) }
+            if self.session.canAddOutput(self.movieOutput) { self.session.addOutput(self.movieOutput) }
+            self.session.commitConfiguration()
+
+            guard generation == self.sessionGeneration else { return }
             self.session.startRunning()
+
+            Task { @MainActor in
+                guard generation == self.sessionGeneration else { return }
+                self.isConfigured = true
+                self.isReady = self.session.isRunning
+            }
         }
-        isConfigured = true
     }
 
     func capturePhoto() {
+        guard isReady, !isRecording else { return }
         let settings = AVCapturePhotoSettings()
         photoOutput.capturePhoto(with: settings, delegate: self)
     }
 
     func startRecording() {
-        guard !movieOutput.isRecording else { return }
+        guard isReady, !movieOutput.isRecording else { return }
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("nocoos-\(UUID().uuidString).mov")
         movieOutput.startRecording(to: url, recordingDelegate: self)
         isRecording = true
@@ -275,7 +317,12 @@ final class CameraModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelega
     }
 
     func stopRecording() {
-        guard movieOutput.isRecording else { return }
+        guard movieOutput.isRecording else {
+            recordingTimer?.invalidate()
+            recordingTimer = nil
+            isRecording = false
+            return
+        }
         movieOutput.stopRecording()
         recordingTimer?.invalidate()
         recordingTimer = nil
@@ -291,7 +338,12 @@ final class CameraModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelega
 
     nonisolated func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
         Task { @MainActor in
-            lastVideoURL = outputFileURL
+            if error == nil {
+                lastVideoURL = outputFileURL
+            }
+            isRecording = false
+            recordingTimer?.invalidate()
+            recordingTimer = nil
         }
     }
 
@@ -303,8 +355,23 @@ final class CameraModel: NSObject, ObservableObject, AVCapturePhotoCaptureDelega
     }
 
     func stop() {
+        sessionGeneration += 1
+        let generation = sessionGeneration
+        if movieOutput.isRecording {
+            movieOutput.stopRecording()
+        }
         recordingTimer?.invalidate()
-        if session.isRunning { session.stopRunning() }
+        recordingTimer = nil
+        isRecording = false
+        isReady = false
+
+        sessionQueue.async { [weak self] in
+            guard let self else { return }
+            // Only stop if this teardown still owns the generation.
+            if generation == self.sessionGeneration, self.session.isRunning {
+                self.session.stopRunning()
+            }
+        }
     }
 }
 
@@ -323,7 +390,10 @@ struct CameraPreview: UIViewRepresentable {
 
 final class CameraPreviewView: UIView {
     override class var layerClass: AnyClass { AVCaptureVideoPreviewLayer.self }
-    var previewLayer: AVCaptureVideoPreviewLayer { layer as! AVCaptureVideoPreviewLayer }
+    var previewLayer: AVCaptureVideoPreviewLayer {
+        // Safe: layerClass forces AVCaptureVideoPreviewLayer.
+        layer as! AVCaptureVideoPreviewLayer
+    }
 }
 
 struct VideoPreviewView: View {
@@ -333,6 +403,9 @@ struct VideoPreviewView: View {
     var body: some View {
         VideoPlayer(player: player)
             .onAppear { player = AVPlayer(url: url) }
-            .onDisappear { player?.pause() }
+            .onDisappear {
+                player?.pause()
+                player = nil
+            }
     }
 }

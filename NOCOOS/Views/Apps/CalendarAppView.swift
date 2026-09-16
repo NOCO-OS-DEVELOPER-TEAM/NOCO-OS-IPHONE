@@ -45,8 +45,10 @@ struct CalendarAppView: View {
 
     private func daysInMonth() -> [Int?] {
         let cal = Calendar.current
-        let range = cal.range(of: .day, in: .month, for: month)!
-        let first = cal.date(from: cal.dateComponents([.year, .month], from: month))!
+        guard let range = cal.range(of: .day, in: .month, for: month),
+              let first = cal.date(from: cal.dateComponents([.year, .month], from: month)) else {
+            return []
+        }
         let weekday = (cal.component(.weekday, from: first) + 5) % 7
         var days: [Int?] = Array(repeating: nil, count: weekday)
         days += range.map { Optional($0) }

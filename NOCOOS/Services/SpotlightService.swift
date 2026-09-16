@@ -7,6 +7,7 @@ final class SpotlightService: ObservableObject {
     @Published var isProcessing = false
 
     private let intentService = IntentService()
+    private var submitGeneration = 0
 
     func submit(
         _ raw: String,
@@ -16,10 +17,18 @@ final class SpotlightService: ObservableObject {
     ) async {
         let query = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !query.isEmpty else { return }
+        guard !isProcessing else { return }
+
+        submitGeneration += 1
+        let generation = submitGeneration
 
         entries.append(SpotlightEntry(role: .user, text: query))
         isProcessing = true
-        defer { isProcessing = false }
+        defer {
+            if generation == submitGeneration {
+                isProcessing = false
+            }
+        }
 
         let intent = intentService.parse(query)
 
@@ -31,18 +40,21 @@ final class SpotlightService: ObservableObject {
         case .openApp(let app):
             appendAction("\(app.displayName) wird geöffnet …")
             await ai.recordSpotlightExchange(user: query, assistant: "\(app.displayName) geöffnet.")
+            guard generation == submitGeneration else { return }
             router.closeSpotlight()
             router.open(app)
 
         case .createNote:
             appendAction("Neue Notiz wird erstellt …")
             await ai.recordSpotlightExchange(user: query, assistant: "Neue Notiz erstellt.")
+            guard generation == submitGeneration else { return }
             router.closeSpotlight()
             router.openNotes(createNew: true)
 
         case .createNoteWithTitle(let title):
             appendAction("Notiz „\(title)“ wird vorbereitet …")
             await ai.recordSpotlightExchange(user: query, assistant: "Notiz „\(title)“ erstellt.")
+            guard generation == submitGeneration else { return }
             router.closeSpotlight()
             router.openNotes(createWithTitle: title)
 
@@ -50,6 +62,7 @@ final class SpotlightService: ObservableObject {
             if let last = notes.notes.first {
                 appendAction("Letzte Notiz wird geöffnet …")
                 await ai.recordSpotlightExchange(user: query, assistant: "Notiz geöffnet: \(last.title.isEmpty ? "Ohne Titel" : last.title)")
+                guard generation == submitGeneration else { return }
                 router.closeSpotlight()
                 router.openNotes(noteID: last.id)
             } else {
@@ -71,15 +84,21 @@ final class SpotlightService: ObservableObject {
             }
 
         case .summarizeNotes, .summarizeText, .askAI, .unknown:
-            var processing = SpotlightEntry(role: .assistant, text: "Denke nach …", isProcessing: true)
+            let processing = SpotlightEntry(role: .assistant, text: "Denke nach …", isProcessing: true)
             entries.append(processing)
             let reply = await ai.processSpotlightQuery(query, router: router)
+            guard generation == submitGeneration else {
+                entries.removeAll { $0.id == processing.id }
+                return
+            }
             entries.removeAll { $0.id == processing.id }
             appendAssistant(reply ?? "Keine Antwort erhalten.")
         }
     }
 
     func clear() {
+        submitGeneration += 1
+        isProcessing = false
         entries.removeAll()
     }
 

@@ -59,9 +59,9 @@ struct MemoryGameView: View {
             moves += 1
             let a = cards.first { $0.id == flipped[0] }
             let b = cards.first { $0.id == flipped[1] }
-            if a?.symbol == b?.symbol {
-                matched.insert(a!.id)
-                matched.insert(b!.id)
+            if let a, let b, a.symbol == b.symbol {
+                matched.insert(a.id)
+                matched.insert(b.id)
                 flipped = []
                 NOCOOSTheme.mediumHaptic()
             } else {

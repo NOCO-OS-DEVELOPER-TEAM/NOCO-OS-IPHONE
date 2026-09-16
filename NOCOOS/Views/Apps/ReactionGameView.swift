@@ -5,6 +5,7 @@ struct ReactionGameView: View {
     @State private var startTime = Date()
     @State private var best: Double?
     @State private var message = "Warte auf Grün …"
+    @State private var roundToken = UUID()
 
     enum GameState { case waiting, ready, tapped, tooEarly }
 
@@ -30,6 +31,7 @@ struct ReactionGameView: View {
         .padding()
         .background(Color(red: 0.07, green: 0.08, blue: 0.14))
         .onAppear { scheduleRound() }
+        .onDisappear { roundToken = UUID() }
         .navigationTitle("Reaktion")
     }
 
@@ -52,16 +54,17 @@ struct ReactionGameView: View {
     }
 
     private func scheduleRound() {
+        let token = UUID()
+        roundToken = token
         gameState = .waiting
         message = "Warte auf Grün …"
         let delay = Double.random(in: 1.2...3.5)
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            if gameState == .waiting {
-                gameState = .ready
-                startTime = Date()
-                message = "Tippe jetzt!"
-                NOCOOSTheme.mediumHaptic()
-            }
+            guard token == roundToken, gameState == .waiting else { return }
+            gameState = .ready
+            startTime = Date()
+            message = "Tippe jetzt!"
+            NOCOOSTheme.mediumHaptic()
         }
     }
 
@@ -70,12 +73,16 @@ struct ReactionGameView: View {
         case .waiting:
             gameState = .tooEarly
             message = "Zu früh! Warte auf Grün."
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { scheduleRound() }
+            let token = roundToken
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                guard token == roundToken else { return }
+                scheduleRound()
+            }
         case .ready:
             let elapsed = Date().timeIntervalSince(startTime)
             gameState = .tapped
             message = String(format: "%.3f Sekunden!", elapsed)
-            if best == nil || elapsed < best! { best = elapsed }
+            best = min(best ?? elapsed, elapsed)
             NOCOOSTheme.mediumHaptic()
         case .tapped, .tooEarly:
             scheduleRound()

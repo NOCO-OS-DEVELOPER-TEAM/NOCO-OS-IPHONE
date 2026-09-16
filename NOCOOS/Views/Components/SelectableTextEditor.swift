@@ -41,14 +41,16 @@ struct SelectableTextEditor: UIViewRepresentable {
         }
 
         func textViewDidChangeSelection(_ textView: UITextView) {
-            guard textView.selectedRange.length > 0 else { return }
-            let selected = (textView.text as NSString).substring(with: textView.selectedRange)
-            guard selected.count >= 3 else { return }
-
-            let menu = UIMenuController.shared
-            if !menu.isMenuVisible {
-                textView.becomeFirstResponder()
+            guard textView.selectedRange.length > 0 else {
+                onSelectionAction?("clear", "")
+                return
             }
+            let selected = (textView.text as NSString).substring(with: textView.selectedRange)
+            guard selected.count >= 3 else {
+                onSelectionAction?("clear", "")
+                return
+            }
+            onSelectionAction?("select", selected)
         }
     }
 }

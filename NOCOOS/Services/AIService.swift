@@ -9,6 +9,7 @@ final class AIService: ObservableObject {
     private let notes: NotesService
     private let settings: SettingsStore
     private let intentService = IntentService()
+    private var requestGeneration = 0
 
     init(connection: ConnectionStore, notes: NotesService, settings: SettingsStore) {
         self.connection = connection
@@ -25,28 +26,32 @@ final class AIService: ObservableObject {
     func send(_ raw: String, router: NOCOOSRouter) async -> String? {
         let prompt = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !prompt.isEmpty else { return nil }
+        guard !isProcessing else { return nil }
 
         messages.append(ChatMessage(role: .user, text: prompt))
-        isProcessing = true
-        defer { isProcessing = false }
+        let generation = beginProcessing()
+        defer { endProcessing(generation) }
 
-        return await handleIntent(prompt, router: router, closeSpotlight: false)
+        return await handleIntent(prompt, router: router)
     }
 
     func processSpotlightQuery(_ raw: String, router: NOCOOSRouter) async -> String? {
         let prompt = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !prompt.isEmpty else { return nil }
+        // Spotlight may run while chat is idle; allow one at a time globally.
+        guard !isProcessing else { return "Bitte warte kurz — NOCO AI arbeitet noch." }
 
         messages.append(ChatMessage(role: .user, text: prompt))
-        isProcessing = true
-        defer { isProcessing = false }
+        let generation = beginProcessing()
+        defer { endProcessing(generation) }
 
         if let local = notes.answerFromNotes(question: prompt) {
+            guard generation == requestGeneration else { return nil }
             appendAssistant(local)
             return local
         }
 
-        return await askServer(prompt, extraContext: notes.notesContextForAI())
+        return await askServer(prompt, extraContext: notes.notesContextForAI(), generation: generation)
     }
 
     func recordSpotlightExchange(user: String, assistant: String) async {
@@ -57,27 +62,49 @@ final class AIService: ObservableObject {
     }
 
     func analyzeImageDescription(_ description: String) async -> String? {
+        guard !isProcessing else { return "Bitte warte kurz — NOCO AI arbeitet noch." }
         messages.append(ChatMessage(role: .user, text: "Bild analysieren: \(description)"))
-        isProcessing = true
-        defer { isProcessing = false }
-        return await askServer("Analysiere dieses Bild und beschreibe, was du siehst. Kontext: \(description)", extraContext: nil)
+        let generation = beginProcessing()
+        defer { endProcessing(generation) }
+        return await askServer(
+            "Analysiere dieses Bild und beschreibe, was du siehst. Kontext: \(description)",
+            extraContext: nil,
+            generation: generation
+        )
     }
 
     func processSelectedText(_ action: String, text: String) async -> String? {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        guard !isProcessing else { return "Bitte warte kurz — NOCO AI arbeitet noch." }
+
         let prompt: String
         switch action {
-        case "summarize": prompt = "Fasse folgenden Text kurz zusammen:\n\(text)"
-        case "explain": prompt = "Erkläre folgenden Text einfach:\n\(text)"
-        case "rewrite": prompt = "Formuliere folgenden Text freundlicher um:\n\(text)"
-        default: prompt = text
+        case "summarize": prompt = "Fasse folgenden Text kurz zusammen:\n\(trimmed)"
+        case "explain": prompt = "Erkläre folgenden Text einfach:\n\(trimmed)"
+        case "rewrite": prompt = "Formuliere folgenden Text freundlicher um:\n\(trimmed)"
+        default: prompt = trimmed
         }
         messages.append(ChatMessage(role: .user, text: prompt))
-        isProcessing = true
-        defer { isProcessing = false }
-        return await askServer(prompt, extraContext: nil)
+        let generation = beginProcessing()
+        defer { endProcessing(generation) }
+        return await askServer(prompt, extraContext: nil, generation: generation)
     }
 
-    private func handleIntent(_ prompt: String, router: NOCOOSRouter, closeSpotlight: Bool) async -> String? {
+    private func beginProcessing() -> Int {
+        requestGeneration += 1
+        isProcessing = true
+        return requestGeneration
+    }
+
+    private func endProcessing(_ generation: Int) {
+        if generation == requestGeneration {
+            isProcessing = false
+        }
+    }
+
+    private func handleIntent(_ prompt: String, router: NOCOOSRouter) async -> String? {
+        let generation = requestGeneration
         let intent = intentService.parse(prompt)
         switch intent {
         case .openApp(let app):
@@ -118,26 +145,26 @@ final class AIService: ObservableObject {
             appendAssistant(reply)
             return reply
         case .summarizeNotes:
-            return await askServer("Fasse meine Notizen kurz zusammen.", extraContext: notes.notesContextForAI())
+            return await askServer("Fasse meine Notizen kurz zusammen.", extraContext: notes.notesContextForAI(), generation: generation)
         case .summarizeText(let text):
-            return await askServer("Fasse folgenden Text zusammen:\n\(text)")
+            return await askServer("Fasse folgenden Text zusammen:\n\(text)", generation: generation)
         case .askAI, .unknown:
             if let local = notes.answerFromNotes(question: prompt) {
                 appendAssistant(local)
                 return local
             }
-            return await askServer(prompt, extraContext: notes.notesContextForAI())
+            return await askServer(prompt, extraContext: notes.notesContextForAI(), generation: generation)
         }
     }
 
-    private func askServer(_ prompt: String, extraContext: String? = nil) async -> String? {
+    private func askServer(_ prompt: String, extraContext: String? = nil, generation: Int) async -> String? {
         guard connection.isPaired, let api = connection.api else {
             let offline = "NOCO AI Server nicht verbunden. Bitte in den Einstellungen koppeln."
             appendAssistant(offline)
             return offline
         }
 
-        var processing = ChatMessage(role: .assistant, text: "Denke nach …", isProcessing: true)
+        let processing = ChatMessage(role: .assistant, text: "Denke nach …", isProcessing: true)
         messages.append(processing)
 
         do {
@@ -152,11 +179,22 @@ final class AIService: ObservableObject {
                 model: settings.aiModelName == "default" ? nil : settings.aiModelName,
                 notesContext: context
             )
+            guard generation == requestGeneration else {
+                messages.removeAll { $0.id == processing.id }
+                return nil
+            }
             messages.removeAll { $0.id == processing.id }
             appendAssistant(reply)
             settings.log("AI reply (\(reply.count) chars)")
             return reply
+        } catch is CancellationError {
+            messages.removeAll { $0.id == processing.id }
+            return nil
         } catch {
+            guard generation == requestGeneration else {
+                messages.removeAll { $0.id == processing.id }
+                return nil
+            }
             messages.removeAll { $0.id == processing.id }
             let msg = error.localizedDescription
             appendAssistant(msg)

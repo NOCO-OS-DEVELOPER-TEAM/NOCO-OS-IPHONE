@@ -24,8 +24,11 @@ struct NoteEditorView: View {
             Divider().overlay(Color.white.opacity(0.15))
 
             SelectableTextEditor(text: $note.body) { action, text in
-                selectionPreview = text
-                Task { await runSelectedTextAI(action, text: text) }
+                if action == "clear" {
+                    selectionPreview = ""
+                } else {
+                    selectionPreview = text
+                }
             }
             .frame(maxHeight: .infinity)
 
@@ -64,6 +67,11 @@ struct NoteEditorView: View {
         } message: {
             Text(aiResult)
         }
+        .onDisappear {
+            notes.update(note)
+        }
+        .onChange(of: note.title) { _, _ in notes.update(note) }
+        .onChange(of: note.body) { _, _ in notes.update(note) }
     }
 
     private var aiToolbar: some View {

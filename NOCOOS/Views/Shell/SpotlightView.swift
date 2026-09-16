@@ -26,22 +26,6 @@ struct SpotlightView: View {
                 content
             }
             .offset(y: dragOffset)
-            .gesture(
-                DragGesture(minimumDistance: 12)
-                    .onChanged { value in
-                        if value.translation.height > 0 {
-                            dragOffset = value.translation.height * 0.35
-                        }
-                    }
-                    .onEnded { value in
-                        if value.translation.height > 80 {
-                            router.closeSpotlight()
-                        }
-                        withAnimation(NOCOOSTheme.spring()) {
-                            dragOffset = 0
-                        }
-                    }
-            )
             .padding(.horizontal, 16)
             .padding(.top, 8)
             .transition(.move(edge: .top).combined(with: .opacity))
@@ -59,7 +43,25 @@ struct SpotlightView: View {
         Capsule()
             .fill(Color.white.opacity(0.25))
             .frame(width: 42, height: 5)
-            .padding(.bottom, 12)
+            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity)
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture(minimumDistance: 12)
+                    .onChanged { value in
+                        if value.translation.height > 0 {
+                            dragOffset = value.translation.height * 0.35
+                        }
+                    }
+                    .onEnded { value in
+                        if value.translation.height > 80 {
+                            router.closeSpotlight()
+                        }
+                        withAnimation(NOCOOSTheme.spring()) {
+                            dragOffset = 0
+                        }
+                    }
+            )
     }
 
     private var searchBar: some View {
@@ -238,6 +240,7 @@ struct SpotlightView: View {
     private func submitQuery() async {
         let text = query
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        guard !spotlight.isProcessing, !ai.isProcessing else { return }
         NOCOOSTheme.lightHaptic()
         query = ""
         await spotlight.submit(text, ai: ai, router: router, notes: notes)
@@ -267,7 +270,10 @@ struct SpotlightView: View {
                 Task { await submitQuery() }
             }
         case .calculation:
-            break
+            if let q = result.query {
+                query = q
+                Task { await submitQuery() }
+            }
         }
     }
 }

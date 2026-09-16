@@ -4,6 +4,7 @@ import PhotosUI
 struct PhotosAppView: View {
     @State private var items: [PhotosPickerItem] = []
     @State private var images: [UIImage] = []
+    @State private var loadGeneration = 0
 
     var body: some View {
         VStack(spacing: 16) {
@@ -40,13 +41,17 @@ struct PhotosAppView: View {
     }
 
     private func loadImages(from items: [PhotosPickerItem]) async {
+        loadGeneration += 1
+        let generation = loadGeneration
         var loaded: [UIImage] = []
         for item in items {
+            guard generation == loadGeneration else { return }
             if let data = try? await item.loadTransferable(type: Data.self),
                let image = UIImage(data: data) {
                 loaded.append(image)
             }
         }
+        guard generation == loadGeneration else { return }
         images = loaded
     }
 }

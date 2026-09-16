@@ -82,6 +82,7 @@ struct NotesAppView: View {
         }
         .tint(NOCOOSTheme.accent)
         .onAppear(perform: handleLaunchAction)
+        .onChange(of: router.notesLaunchToken) { _, _ in handleLaunchAction() }
         .onChange(of: router.notesLaunchAction) { _, _ in handleLaunchAction() }
         .onChange(of: bridge.pendingNoteFromText) { _, text in
             if let text, !text.isEmpty {

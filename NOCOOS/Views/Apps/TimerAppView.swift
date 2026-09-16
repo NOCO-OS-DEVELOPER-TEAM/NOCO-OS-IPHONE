@@ -35,6 +35,7 @@ struct TimerAppView: View {
         }
         .padding()
         .background(Color(red: 0.07, green: 0.08, blue: 0.14))
+        .onDisappear { pause() }
     }
 
     private func start() {

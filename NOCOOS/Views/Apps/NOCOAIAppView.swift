@@ -16,10 +16,13 @@ struct NOCOAIAppView: View {
             inputBar
         }
         .onReceive(NotificationCenter.default.publisher(for: .nocoOSSpotlightAI)) { note in
-            if let prompt = note.object as? String {
+            if let prompt = note.object as? String, !aiService.isProcessing {
                 input = prompt
                 Task { await send() }
             }
+        }
+        .onDisappear {
+            speech.stopListening()
         }
     }
 
@@ -42,6 +45,7 @@ struct NOCOAIAppView: View {
                         speech.stopListening()
                     } else {
                         await speech.startListening { text in
+                            guard !aiService.isProcessing else { return }
                             input = text
                             Task { await send() }
                         }
@@ -128,7 +132,8 @@ struct NOCOAIAppView: View {
     }
 
     private func send() async {
-        let text = input
+        let text = input.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty, !aiService.isProcessing else { return }
         input = ""
         NOCOOSTheme.lightHaptic()
         _ = await aiService.send(text, router: router)

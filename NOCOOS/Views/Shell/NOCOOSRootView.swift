@@ -4,7 +4,6 @@ struct NOCOOSRootView: View {
     @EnvironmentObject private var router: NOCOOSRouter
     @EnvironmentObject private var connection: ConnectionStore
     @State private var showBoot = true
-    @State private var homeParallax: CGFloat = 0
 
     var body: some View {
         ZStack {
@@ -13,7 +12,6 @@ struct NOCOOSRootView: View {
             // HOME
             VStack(spacing: 0) {
                 HomeScreenView()
-                    .offset(y: homeParallax)
                 DockView()
                     .opacity(router.activeApp == nil && !router.showSpotlight ? 1 : 0)
                     .offset(y: router.activeApp == nil ? 0 : 40)

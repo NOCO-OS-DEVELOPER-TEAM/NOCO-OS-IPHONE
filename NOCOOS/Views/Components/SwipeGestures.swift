@@ -21,7 +21,9 @@ struct SwipeDownToSpotlightModifier: ViewModifier {
                             withAnimation(NOCOOSTheme.spring()) { dragY = 0 }
                             return
                         }
-                        if value.translation.height > 55 || value.predictedEndTranslation.height > 100 {
+                        // Must start in upper area — otherwise home scrolling opens Spotlight.
+                        if value.startLocation.y < 220,
+                           value.translation.height > 55 || value.predictedEndTranslation.height > 100 {
                             router.openSpotlight()
                         }
                         withAnimation(NOCOOSTheme.spring()) { dragY = 0 }

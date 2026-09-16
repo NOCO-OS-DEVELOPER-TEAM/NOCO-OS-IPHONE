@@ -16,21 +16,64 @@ enum MathEvaluator {
             .replacingOccurrences(of: ",", with: ".")
             .replacingOccurrences(of: " ", with: "")
 
-        guard normalized.range(of: #"^[0-9+\-*/().]+$"#, options: .regularExpression) != nil else {
-            return nil
-        }
-        guard normalized.contains(where: { "+-*/".contains($0) }) else { return nil }
+        guard isSafeArithmeticExpression(normalized) else { return nil }
 
-        let expr = NSExpression(format: normalized)
-        guard let value = expr.expressionValue(with: nil, context: nil) as? NSNumber else {
-            return nil
-        }
+        // Avoid NSExpression ObjC exceptions on malformed input.
+        guard let value = safeEvaluateNSExpression(normalized) else { return nil }
 
         let double = value.doubleValue
+        guard double.isFinite else { return nil }
         if double.truncatingRemainder(dividingBy: 1) == 0 {
             return String(format: "%.0f", double)
         }
         return String(format: "%.4g", double)
+    }
+
+    /// Strict validation so NSExpression never receives crash-prone strings.
+    private static func isSafeArithmeticExpression(_ s: String) -> Bool {
+        guard s.range(of: #"^[0-9+\-*/().]+$"#, options: .regularExpression) != nil else {
+            return false
+        }
+        guard s.contains(where: { "+-*/".contains($0) }) else { return false }
+        guard !s.contains("()") else { return false }
+
+        var depth = 0
+        var previous: Character = "("
+        for ch in s {
+            switch ch {
+            case "(":
+                depth += 1
+                if previous.isNumber || previous == ")" { return false }
+            case ")":
+                depth -= 1
+                if depth < 0 { return false }
+                if "+-*/(".contains(previous) { return false }
+            case "+", "*", "/":
+                if "+-*/(".contains(previous) { return false }
+            case "-":
+                // Allow unary minus after operator or open paren / start.
+                if previous == "-" { return false }
+            case ".":
+                if previous == "." { return false }
+            default:
+                break
+            }
+            previous = ch
+        }
+        guard depth == 0 else { return false }
+        guard let last = s.last, !"+-*/.".contains(last) else { return false }
+        guard let first = s.first, !"*/+".contains(first) else { return false }
+        return true
+    }
+
+    private static func safeEvaluateNSExpression(_ format: String) -> NSNumber? {
+        // Final structural reject for known NSExpression crash patterns.
+        if format.hasPrefix("*") || format.hasPrefix("/") { return nil }
+        if format.contains("**") || format.contains("//") || format.contains("*/") || format.contains("/*") {
+            return nil
+        }
+        let expr = NSExpression(format: format)
+        return expr.expressionValue(with: nil, context: nil) as? NSNumber
     }
 
     private static func evaluatePercentage(_ text: String) -> String? {
@@ -50,6 +93,7 @@ enum MathEvaluator {
             let pct = Double(lower[pctRange].replacingOccurrences(of: ",", with: ".")) ?? 0
             let base = Double(lower[baseRange].replacingOccurrences(of: ",", with: ".")) ?? 0
             let result = base * pct / 100
+            guard result.isFinite else { continue }
             if result.truncatingRemainder(dividingBy: 1) == 0 {
                 return String(format: "%.0f", result)
             }

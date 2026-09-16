@@ -77,8 +77,17 @@ struct SnakeGameView: View {
     }
 
     private func spawnFood() {
-        repeat { food = CGPoint(x: CGFloat(Int.random(in: 0..<grid)), y: CGFloat(Int.random(in: 0..<grid))) }
-        while snake.contains(food)
+        let maxCells = grid * grid
+        guard snake.count < maxCells else { return }
+        var next = food
+        var attempts = 0
+        repeat {
+            next = CGPoint(x: CGFloat(Int.random(in: 0..<grid)), y: CGFloat(Int.random(in: 0..<grid)))
+            attempts += 1
+        } while snake.contains(next) && attempts < 200
+        if !snake.contains(next) {
+            food = next
+        }
     }
 }
 

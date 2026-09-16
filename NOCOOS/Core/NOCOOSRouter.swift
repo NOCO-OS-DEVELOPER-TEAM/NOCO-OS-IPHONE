@@ -5,10 +5,11 @@ import Combine
 final class NOCOOSRouter: ObservableObject {
     @Published var activeApp: NOCOAppID?
     @Published var showSpotlight = false
-    @Published var launchOrigin: CGRect = .zero
-    @Published var isLaunchAnimating = false
     @Published var notesLaunchAction: NotesLaunchAction?
+    @Published var notesLaunchToken = UUID()
     @Published var cameraLaunchMode: CameraLaunchMode = .photo
+
+    private var launchAnimationGeneration = 0
 
     enum NotesLaunchAction: Equatable {
         case createNew
@@ -24,20 +25,22 @@ final class NOCOOSRouter: ObservableObject {
     }
 
     func open(_ app: NOCOAppID, from frame: CGRect = .zero) {
-        guard activeApp != app else { return }
+        _ = frame
+        if activeApp == app { return }
         NOCOOSTheme.mediumHaptic()
-        launchOrigin = frame
-        isLaunchAnimating = true
+        launchAnimationGeneration += 1
+        let generation = launchAnimationGeneration
         withAnimation(NOCOOSTheme.spring(response: 0.48, dampingFraction: 0.86)) {
             activeApp = app
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
-            self.isLaunchAnimating = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) { [weak self] in
+            guard let self, generation == self.launchAnimationGeneration else { return }
         }
     }
 
     func closeApp() {
         NOCOOSTheme.lightHaptic()
+        launchAnimationGeneration += 1
         withAnimation(NOCOOSTheme.spring(response: 0.44, dampingFraction: 0.88)) {
             activeApp = nil
             notesLaunchAction = nil
@@ -77,7 +80,10 @@ final class NOCOOSRouter: ObservableObject {
         } else if let search {
             notesLaunchAction = .search(search)
         }
-        open(.notes)
+        notesLaunchToken = UUID()
+        if activeApp != .notes {
+            open(.notes)
+        }
     }
 
     func openCamera(mode: CameraLaunchMode = .photo) {

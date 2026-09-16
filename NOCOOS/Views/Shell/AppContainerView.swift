@@ -34,7 +34,6 @@ struct AppContainerView: View {
             .offset(y: max(0, dragOffset))
             .scaleEffect(appear ? 1 : 0.9, anchor: .bottom)
             .opacity(appear ? 1 : 0)
-            .gesture(dismissGesture)
             .safeAreaInset(edge: .bottom) {
                 homeIndicator
             }
@@ -52,6 +51,9 @@ struct AppContainerView: View {
             .frame(width: 40, height: 5)
             .padding(.top, 10)
             .padding(.bottom, 4)
+            .frame(maxWidth: .infinity)
+            .contentShape(Rectangle())
+            .gesture(dismissGesture)
     }
 
     private var appHeader: some View {
@@ -100,6 +102,8 @@ struct AppContainerView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
+        .contentShape(Rectangle())
+        .gesture(dismissGesture)
     }
 
     private var homeIndicator: some View {
@@ -128,13 +132,12 @@ struct AppContainerView: View {
     private var dismissGesture: some Gesture {
         DragGesture(minimumDistance: 20, coordinateSpace: .local)
             .onChanged { value in
-                // Pull down from top area
-                if value.startLocation.y < 80, value.translation.height > 0 {
+                if value.translation.height > 0 {
                     dragOffset = value.translation.height * 0.85
                 }
             }
             .onEnded { value in
-                if value.translation.height > 110 {
+                if value.translation.height > 110 || value.predictedEndTranslation.height > 180 {
                     close()
                 } else {
                     withAnimation(NOCOOSTheme.spring()) { dragOffset = 0 }
